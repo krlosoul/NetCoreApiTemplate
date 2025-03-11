@@ -19,7 +19,7 @@ namespace Infrastructure
     public static class DependencyInjection
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
-        {           
+        {
             services.AddVaultSecrets();
             services.AddConfigHangdire();
             services.AddDbContext<SampleContext>();
@@ -38,16 +38,15 @@ namespace Infrastructure
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<IMinioService, MinioService>();
             services.AddScoped<ITwilioService, TwilioService>();
-            services.AddTransient<IUnitOfWork, UnitOfWork>(); 
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
 
-            #if(includeElk)
             services.ConfigureSerilog();
-            #endif
+
             return services;
         }
 
         #region Private Method
-        #if(includeElk)
+
         private static void ConfigureSerilog(this IServiceCollection services)
         {
             var logger = new LoggerConfiguration()
@@ -86,7 +85,7 @@ namespace Infrastructure
                 loggingBuilder.AddSerilog();
             });
         }
-        
+
         private static void AddEnrichments(LoggerConfiguration loggerConfig, SerilogSecretDto serilogOptions)
         {
             foreach (var enrichment in serilogOptions?.Enrich!)
@@ -109,21 +108,21 @@ namespace Infrastructure
         }
 
         private static void AddSinks(LoggerConfiguration loggerConfig, SerilogSecretDto serilogSettings)
+        {
+            foreach (var writeTo in serilogSettings?.WriteTo!)
             {
-                foreach (var writeTo in serilogSettings?.WriteTo!)
+                switch (writeTo.Name)
                 {
-                    switch (writeTo.Name)
-                    {
-                        case "Console":
-                            loggerConfig.WriteTo.Console();
-                            break;
-                        case "Elasticsearch":
-                            var elasticArgs = writeTo.Args;
-                            loggerConfig.WriteTo.Elasticsearch(ConfigureElasticSink(elasticArgs!));
-                            break;
-                    }
+                    case "Console":
+                        loggerConfig.WriteTo.Console();
+                        break;
+                    case "Elasticsearch":
+                        var elasticArgs = writeTo.Args;
+                        loggerConfig.WriteTo.Elasticsearch(ConfigureElasticSink(elasticArgs!));
+                        break;
                 }
             }
+        }
 
         private static ElasticsearchSinkOptions ConfigureElasticSink(WriteToArgsDto args)
         {
@@ -148,8 +147,7 @@ namespace Infrastructure
         {
             return Enum.TryParse(minimumLevel, true, out LogEventLevel level) ? level : LogEventLevel.Information;
         }
-        #endif
-        
+
         private static IServiceCollection AddVaultSecrets(this IServiceCollection services)
         {
             services.AddScoped<ISecretService, SecretService>();
@@ -157,9 +155,7 @@ namespace Infrastructure
 
             static T ResolveSecret<T>(IServiceProvider provider, Func<ISettingsService, T> selector) => selector(provider.GetRequiredService<ISettingsService>());
 
-            #if(includeElk)
             services.AddSingleton(provider => ResolveSecret(provider, s => s.GetSerilogSecret()));
-            #endif
             services.AddSingleton(provider => ResolveSecret(provider, s => s.GetDataBaseSecret()));
             services.AddSingleton(provider => ResolveSecret(provider, s => s.GetJwtSecret()));
             services.AddSingleton(provider => ResolveSecret(provider, s => s.GetCryptoSecret()));
@@ -173,7 +169,7 @@ namespace Infrastructure
 
             return services;
         }
-        
+
         public static void AddHangfireDashboard(this IApplicationBuilder app)
         {
             var hangfireSecretDto = app.ApplicationServices.GetRequiredService<HangfireSecretDto>();

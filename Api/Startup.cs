@@ -23,7 +23,6 @@ namespace Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDependencyInjection(Configuration);
-            Log.Information("🔥 Serilog está funcionando en la aplicación");
 
             services.AddControllers(options => options.Filters.Add<ApiExceptionFilterAttribute>());
             services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
@@ -60,18 +59,17 @@ namespace Api
                 endpoints.MapControllers();
             });
             app.AddSwaggerConfiguration(swaggerSettings);
-                        using (var scope = app.ApplicationServices.CreateScope())
-                        {
-                            var serviceProvider = scope.ServiceProvider;
-                                var notificationService = serviceProvider.GetRequiredService<ITwilioService>();
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var serviceProvider = scope.ServiceProvider;
+                var notificationService = serviceProvider.GetRequiredService<ITwilioService>();
 
 
-                            //notificationService.SendWhatsAppAsync("+573116806969", "¡Hola , soy una notificacion enviada desde net core att el mejor desarrollador del mundo!").Wait();
+                //notificationService.SendWhatsAppAsync("+573116806969", "¡Hola , soy una notificacion enviada desde net core att el mejor desarrollador del mundo!").Wait();
 
-                            /*var objeto = new { license_plate = "ABC123", service= "LAVADA DE PRUEBA" };
-                            notificationService.SendWhatsAppThemeAsync("+573116806969",objeto).Wait();*/
-
-                        }
+                /*var objeto = new { license_plate = "ABC123", service= "LAVADA DE PRUEBA" };
+                notificationService.SendWhatsAppThemeAsync("+573116806969",objeto).Wait();*/
+            }
         }
     }
 }

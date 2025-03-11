@@ -786,7 +786,9 @@ fi
             "BatchSizeLimit": 100,
             "ConnectionTimeout": 5,
             "IndexFormat": "logs-{0:yyyy.MM.dd}",
-            "NodeUris": "http://localhost:9200",
+            "NodeUris": [
+              "http://localhost:9200"
+            ],
             "NumberOfReplicas": 1,
             "NumberOfShards": 1,
             "TemplateName": "sample-template",
