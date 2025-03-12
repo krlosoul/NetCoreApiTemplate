@@ -15,12 +15,16 @@ namespace Infrastructure
     using Microsoft.AspNetCore.Builder;
     using Hangfire.SqlServer;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
+    using Core.Dtos.AppSettingsDto;
+    using Microsoft.Extensions.Diagnostics.HealthChecks;
 
     public static class DependencyInjection
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
             services.AddVaultSecrets();
+            services.AddApplicationHealthChecks();
             services.AddConfigHangdire();
             services.AddDbContext<SampleContext>();
             services.AddSingleton<ICryptoService, CryptoService>();
@@ -198,6 +202,22 @@ namespace Infrastructure
             });
 
             services.AddHangfireServer();
+
+            return services;
+        }
+        
+        private static IServiceCollection AddApplicationHealthChecks(this IServiceCollection services)
+        {
+            var vaultSecret = services.BuildServiceProvider().GetRequiredService<IOptions<VaultAppSettingDto>>().Value;
+            var databaseSecret = services.BuildServiceProvider().GetRequiredService<DataBaseSecretDto>();
+            var minioSecret = services.BuildServiceProvider().GetRequiredService<MinioSecretDto>();
+
+            services.AddHealthChecks()
+                .AddUrlGroup(new Uri($"{vaultSecret.Uri}/v1/sys/health"), name: "vault")
+                .AddSqlServer(databaseSecret.ConnectionString!, name: "sqlserver", failureStatus: HealthStatus.Unhealthy)
+                .AddUrlGroup(new Uri($"{minioSecret.Endpoint}/minio/health/live"), name: "minio");
+
+            services.AddHealthChecksUI().AddInMemoryStorage();
 
             return services;
         }

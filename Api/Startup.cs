@@ -15,6 +15,8 @@ namespace Api
     using Infrastructure;
     using Application.Interfaces.Services;
     using Serilog;
+    using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+    using HealthChecks.UI.Client;
 
     public class Startup(IConfiguration configuration)
     {
@@ -57,6 +59,15 @@ namespace Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHealthChecks("/actuator/health", new HealthCheckOptions
+                {
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
+            });
+
+            app.UseHealthChecksUI(config =>
+            {
+                config.UIPath = "/actuator";
             });
             app.AddSwaggerConfiguration(swaggerSettings);
             using (var scope = app.ApplicationServices.CreateScope())
