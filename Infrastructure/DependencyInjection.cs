@@ -166,6 +166,8 @@ namespace Infrastructure
             services.AddSingleton(provider => ResolveSecret(provider, s => s.GetTwilioSecret()));
             services.AddSingleton(provider => ResolveSecret(provider, s => s.GetHangfireSecret()));
             services.AddSingleton(provider => ResolveSecret(provider, s => s.GetRabbitMQSecret()));
+            services.AddSingleton(provider => ResolveSecret(provider, s => s.GetKeycloakSecret()));
+            services.AddSingleton(provider => ResolveSecret(provider, s => s.GetAlfrescoSecret()));
 
             return services;
         }

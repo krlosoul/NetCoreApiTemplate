@@ -66,5 +66,15 @@ namespace Infrastructure.Services
         {
             return _secretService.GetSecretAsync<RabbitMQSecretDto>(_secretAppSettingDto?.RabbitMQ).GetAwaiter().GetResult();
         }
+
+        public AlfrescoSecretDto GetAlfrescoSecret()
+        {
+            return _secretService.GetSecretAsync<AlfrescoSecretDto>(_secretAppSettingDto?.Alfresco).GetAwaiter().GetResult();
+        }
+
+        public KeycloakSecretDto GetKeycloakSecret()
+        {
+            return _secretService.GetSecretAsync<KeycloakSecretDto>(_secretAppSettingDto?.Keycloak).GetAwaiter().GetResult();
+        }
     }
 }

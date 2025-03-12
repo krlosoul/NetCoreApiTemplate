@@ -11,9 +11,10 @@ namespace Api.Configurations
             services.AddAppSettings(configuration);
             services.AddInfrastructure();
             services.AddBusiness();
-            services.AddAuthenticationJwt();
-            services.AuthenticationKeycloak();
-            services.AddPolicies();
+            //services.AddAuthentication();
+            services.AddAuthenticationKeycloak();
+            //services.AddPolicies();
+            services.AddPoliciesKeycloak();
 
             return services;
         }

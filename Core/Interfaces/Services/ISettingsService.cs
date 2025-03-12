@@ -1,7 +1,7 @@
 namespace Core.Interfaces.Services
 {
-    using Dtos.SecretsDto;
-    
+    using Core.Dtos.SecretsDto;
+
     public interface ISettingsService
     {
         /// <summary>
@@ -51,7 +51,19 @@ namespace Core.Interfaces.Services
         /// </summary>
         /// <returns>The dto.</returns>
         public KafkaSecretDto GetKafkaSecret();
-        
+
+        /// <summary>
+        /// Get alfresco data from vault.
+        /// </summary>
+        /// <returns>The dto.</returns>
+        public AlfrescoSecretDto GetAlfrescoSecret();
+
+        /// <summary>
+        /// Get keycloak data from vault.
+        /// </summary>
+        /// <returns>The dto.</returns>
+        public KeycloakSecretDto GetKeycloakSecret();
+
         /// <summary>
         /// Get Twilio data from vault.
         /// </summary>
