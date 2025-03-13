@@ -16,5 +16,9 @@ namespace Core.Dtos.SecretsDto
         public Dictionary<string, object?>? QueueArguments { get; set; }
         public string? RoutingKey { get; set; }
         public bool AutoAck { get; set; }
+        public int MaxRetryAttempts { get; set; }
+        public int RetryDelayMs { get; set; }
+        public string? DLQQueueName { get; set; }
+
     }
 }
