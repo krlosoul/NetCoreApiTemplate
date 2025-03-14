@@ -11,6 +11,7 @@ namespace Test.UnitTest.Features.Roles.Commands
     using Core.Messages;
     using FluentAssertions;
     using Application.Features.Role.Dtos;
+    using Test.Stub;
 
     public class CreateRoleCommandHandlerTests
     {
@@ -30,18 +31,18 @@ namespace Test.UnitTest.Features.Roles.Commands
         [Fact]
         public async Task Handle_WhenRoleAlreadyExists_ShouldThrowException()
         {
-            var command = new CreateRoleCommand { Description = "Admin" };
+            var command = new CreateRoleCommand { Description = RoleStub.CreateRoleDto().Description };
             _unitOfWorkMock.Setup(u => u.RoleRepository.AnyAsync(It.IsAny<System.Linq.Expressions.Expression<System.Func<Core.Entities.Role, bool>>>())).ReturnsAsync(true);
 
             var act = async () => await _handler.Handle(command, CancellationToken.None);
 
-            await act.Should().ThrowAsync<BadRequestException>().WithMessage(Message.AlreadyExists("role", "Admin"));
+            await act.Should().ThrowAsync<BadRequestException>().WithMessage(Message.AlreadyExists("role", RoleStub.CreateRoleDto().Description));
         }
 
         [Fact]
         public async Task Handle_WhenRoleIsCreated_ShouldReturnSuccess()
         {
-            var command = new CreateRoleCommand { Description = "New Role" };
+            var command = new CreateRoleCommand { Description = RoleStub.CreateRoleDto().Description };
             _unitOfWorkMock.Setup(u => u.RoleRepository.AnyAsync(It.IsAny<System.Linq.Expressions.Expression<System.Func<Core.Entities.Role, bool>>>())).ReturnsAsync(false);
             _unitOfWorkMock.Setup(u => u.RoleRepository.InsertAsync(It.IsAny<Core.Entities.Role>())).ReturnsAsync(true);
             _mapperMock.Setup(m => m.Map<CreateRoleDto, Core.Entities.Role>(It.IsAny<CreateRoleDto>())).Returns(new Core.Entities.Role());

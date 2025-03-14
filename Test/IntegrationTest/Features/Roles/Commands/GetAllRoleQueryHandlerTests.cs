@@ -13,6 +13,7 @@ namespace Test.IntegrationTest.Features.Roles.Commands
     using Core.Interfaces.DataAccess;
     using Core.Dtos.SecretsDto;
     using Core.Messages;
+    using Test.Stub;
 
     public class GetAllRoleQueryHandlerTests
     {
@@ -50,7 +51,7 @@ namespace Test.IntegrationTest.Features.Roles.Commands
         [Fact]
         public async Task Handle_WhenRolesExist_ShouldReturnRoles()
         {
-            await _unitOfWork.RoleRepository.InsertAsync(new Role { Description = "TestRole" });
+            await _unitOfWork.RoleRepository.InsertAsync(RoleStub.CreateRole());
 
             var result = await _handler.Handle(new GetAllRoleQuery(), CancellationToken.None);
             result.Should().NotBeNull();
