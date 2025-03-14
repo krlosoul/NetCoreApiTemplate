@@ -11,8 +11,9 @@ namespace Api.Controllers
     using Microsoft.AspNetCore.Mvc;
 
     [ApiController]
+    [ApiVersion("1.0")]
     [Route("api/V1/[controller]")]
-    public class UserController(IMediator mediator) : ControllerBase
+    public class UsersController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
 
@@ -31,14 +32,14 @@ namespace Api.Controllers
         /// </summary>
         /// <param name="createUserCommand">The parameters.</param>
         /// <returns>Response.</returns>
-        [HttpPost("CreateUser")]
+        [HttpPost]
         public async Task<Result> CreateUserAsync([FromForm] CreateUserCommand createUserCommand) => await _mediator.Send(createUserCommand);
 
         /// <summary>
         /// Get All User.
         /// </summary>
         /// <returns>IEnumerable&lt;GetAllUserDto&gt;</returns>
-        [HttpGet("GetAllUser/{PageNumber}/{PageSize}")]
+        [HttpGet("{PageNumber}/{PageSize}")]
         [Consumes("application/json")]
         [Authorize(Policy = nameof(AdministratorPolicy))]
         public Task<Result<IEnumerable<GetAllUserDto>>> GetAllUserAsync([FromRoute] GetAllUserQuery getAllUserQuery) => _mediator.Send(getAllUserQuery);

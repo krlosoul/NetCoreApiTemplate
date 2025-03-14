@@ -9,9 +9,10 @@ namespace Api.Controllers
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
-    [ApiController]
-    [Route("api/V1/[controller]")]
-    public class RoleController(IMediator mediator) : ControllerBase
+    [ApiController]    
+    [ApiVersion("1.0")]
+    [Route("api/[controller]")]
+    public class RolesController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
 
@@ -19,7 +20,7 @@ namespace Api.Controllers
         /// Get All Roles.
         /// </summary>
         /// <returns>IEnumerable&lt;Role&gt;</returns>
-        [HttpGet("GetAllRoles")]
+        [HttpGet]
         [Consumes("application/json")]
         [Authorize(Policy = "Administrador")]//Keycloak
         public Task<Result<IEnumerable<RoleDto>>> GetAllRolesAsync() => _mediator.Send(new GetAllRoleQuery());
@@ -29,7 +30,7 @@ namespace Api.Controllers
         /// </summary>
         /// <param name="createRoleCommand">The parameters.</param>
         /// <returns>Response.</returns>
-        [HttpPost("CreateRole")]
+        [HttpPost]
         [Consumes("application/json")]
         [Authorize(Policy = nameof(AdministratorPolicy))]//Local
         public async Task<Result> CreateRoleAsync([FromBody] CreateRoleCommand createRoleCommand) => await _mediator.Send(createRoleCommand);

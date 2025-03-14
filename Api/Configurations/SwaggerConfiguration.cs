@@ -19,6 +19,14 @@ namespace Api.Configurations
                     Title = swaggerSettings.Title,
                     Version = swaggerSettings.Version
                 });
+                options.AddSecurityDefinition("x-api-version", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Name = "x-api-version",
+                    Type = SecuritySchemeType.ApiKey,
+                    Description = "Especificar la versión de la API en el header 'x-api-version'. Ejemplo: 1.0"
+                });
+                options.OperationFilter<ApiVersionHeaderFilter>();
                 options.AddSecurityDefinition(swaggerSettings.SecurityName, new OpenApiSecurityScheme
                 {
                     Description = swaggerSettings.DescriptionToken,
